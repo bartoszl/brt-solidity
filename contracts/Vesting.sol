@@ -28,6 +28,10 @@ contract Vesting is Ownable {
 
         _token.transferFrom(owner(), address(this), amount);
 
+        if(vest[receiver]) {
+            vests[receiver].amount += amount;
+        }
+
         vests[receiver] = Vest(amount, block.timestamp, 0);
     }
 
