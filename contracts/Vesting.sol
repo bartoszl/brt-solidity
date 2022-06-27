@@ -11,7 +11,7 @@ contract Vesting is Ownable {
         uint256 collected;
     }
 
-    mapping(address => Vest) private _vests;
+    mapping(address => Vest) public vests;
 
     uint constant _vestingPeriod = 60*60*24*30; // 1 month in seconds
 
@@ -22,29 +22,29 @@ contract Vesting is Ownable {
     }
 
     function vest(address receiver, uint amount) public onlyOwner {
-        _vests[receiver] = Vest(amount, block.timestamp, 0);
+        uint allowance = _token.allowance(owner(), address(this));
+
+        require(allowance >= amount, 'Not enough allowance');
+
+        _token.transferFrom(owner(), address(this), amount);
+
+        vests[receiver] = Vest(amount, block.timestamp, 0);
     }
 
     function claim() public returns(uint) {
+        require(vests[msg.sender].collected < vests[msg.sender].amount);
+
         uint claimAmount = getCurrentVestAmountForAddress(msg.sender);
 
         _token.transfer(msg.sender, claimAmount);
 
-        _vests[msg.sender].collected = claimAmount;
+        vests[msg.sender].collected = claimAmount;
 
         return claimAmount;
     }
 
-    function getCollectedAmountForAddress(address addy) public view returns(uint){
-        return _vests[addy].collected;
-    }
-
-    function getTotalVestAmountForAddress(address addy) public view returns(uint){
-        return _vests[addy].amount;
-    }
-
     function getCurrentVestAmountForAddress(address addy) public view returns(uint){
-        return(_calculateCurrentVestedAmount(_vests[addy]));
+        return(_calculateCurrentVestedAmount(vests[addy]));
     }
 
     function _calculateCurrentVestedAmount(Vest memory currentVest) private view returns (uint) {

@@ -185,8 +185,8 @@
       ]
     },
     "/Users/bartosz/Documents/Blockchain/kurs/contracts/BRTToken.sol": {
-      "lastModificationDate": 1656094940657,
-      "contentHash": "2c35ff6224d8aeb8e00d0f7089803237",
+      "lastModificationDate": 1656358182409,
+      "contentHash": "98cef6615b9bbac9cc36c3e4e9126a1d",
       "sourceName": "contracts/BRTToken.sol",
       "solcConfig": {
         "version": "0.8.0",
@@ -223,8 +223,8 @@
       ]
     },
     "/Users/bartosz/Documents/Blockchain/kurs/contracts/Vesting.sol": {
-      "lastModificationDate": 1656209893717,
-      "contentHash": "050d1650769d866ffe872301ab78f12e",
+      "lastModificationDate": 1656367909169,
+      "contentHash": "dc777e4c1d1961c027769cc5b90e4da8",
       "sourceName": "contracts/Vesting.sol",
       "solcConfig": {
         "version": "0.8.0",

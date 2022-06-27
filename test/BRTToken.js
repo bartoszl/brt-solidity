@@ -1,6 +1,5 @@
 const { expect } = require("chai");
-
-const { expectRevert } = require('@openzeppelin/test-helpers');
+const {BigNumber} = require("ethers");
 
 describe("Token contract", function () {
   let BRTToken;
@@ -9,8 +8,8 @@ describe("Token contract", function () {
   let addr1;
 
   beforeEach(async function () {
-    BRTToken = await ethers.getContractFactory("BRTToken");
     [owner, addr1, ...addrs] = await ethers.getSigners();
+    BRTToken = await ethers.getContractFactory("BRTToken", owner);
 
     BRTTokenContract = await BRTToken.deploy();
   });
@@ -28,10 +27,9 @@ describe("Token contract", function () {
 
   describe("Mint", function () {
     it("Should revert if non owner tries to mint", async function () {
-      expectRevert(
+      await expect(
         BRTTokenContract.connect(addr1).mint(addr1.address, 50),
-        'Ownable: caller is not the owner',
-      );
+      ).to.be.revertedWith('Ownable: caller is not the owner');
     });
 
     it("Should mint tokens if owner calls the method", async function () {
@@ -40,9 +38,11 @@ describe("Token contract", function () {
 
         await BRTTokenContract.mint(owner.address, mintAmount);
 
+        await network.provider.send("evm_mine")
+
         const totalSupply = await BRTTokenContract.totalSupply();
 
-        expect(totalSupply).to.equal(Number(initialSupply) + mintAmount);
+        expect(totalSupply).to.equal(initialSupply.add(BigNumber.from(mintAmount)));
     });
   });
 });
