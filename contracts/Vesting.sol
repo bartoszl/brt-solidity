@@ -25,12 +25,9 @@ contract Vesting is Ownable {
         uint allowance = _token.allowance(owner(), address(this));
 
         require(allowance >= amount, 'Not enough allowance');
+        require(vests[receiver].amount == 0, 'Vest for this address already exists');
 
         _token.transferFrom(owner(), address(this), amount);
-
-        if(vest[receiver]) {
-            vests[receiver].amount += amount;
-        }
 
         vests[receiver] = Vest(amount, block.timestamp, 0);
     }

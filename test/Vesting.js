@@ -64,6 +64,19 @@ describe("Vesting contract", function () {
       ).to.be.revertedWith('Not enough allowance');
     });
 
+    it("Should not vest if address already exists", async () => {
+      const amount = 50;
+
+      await BRTTokenContract.approve(VestingContract.address, 2*amount);
+      await network.provider.send("evm_mine");
+
+      await VestingContract.vest(addr1.address, amount);
+
+      await expect(
+        VestingContract.vest(addr1.address, amount),
+      ).to.be.revertedWith('Vest for this address already exists');
+    });
+
     it("Should be able to see full vested amount after 30 days", async function () {
       const amount = 100;
 

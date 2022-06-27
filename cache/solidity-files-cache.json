@@ -223,8 +223,8 @@
       ]
     },
     "/Users/bartosz/Documents/Blockchain/kurs/contracts/Vesting.sol": {
-      "lastModificationDate": 1656367909169,
-      "contentHash": "dc777e4c1d1961c027769cc5b90e4da8",
+      "lastModificationDate": 1656368766083,
+      "contentHash": "629969981f2b2c77ff5f0d646ecaf52c",
       "sourceName": "contracts/Vesting.sol",
       "solcConfig": {
         "version": "0.8.0",
