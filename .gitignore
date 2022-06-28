@@ -25,3 +25,6 @@ yarn-error.log*
 .idea
 keys.js
 .env
+
+artifacts
+cache
