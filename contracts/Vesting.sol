@@ -1,10 +1,10 @@
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.2;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "hardhat/console.sol";
 
-contract Vesting is Ownable {
+contract Vesting is OwnableUpgradeable {
     struct Vest {
         uint256 amount;
         uint256 timestamp;
@@ -17,7 +17,9 @@ contract Vesting is Ownable {
 
     IERC20 private _token;
 
-    constructor(IERC20 token) {
+    function initialize(IERC20 token) public initializer {
+        __Ownable_init();
+        __Ownable_init_unchained();
         _token = token;
     }
 

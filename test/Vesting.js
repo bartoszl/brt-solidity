@@ -23,8 +23,9 @@ describe("Vesting contract", function () {
     BRTTokenContract = await BRTToken.deploy();
     await BRTTokenContract.deployed();
 
-    VestingContract = await Vesting.deploy(BRTTokenContract.address);
+    VestingContract = await Vesting.deploy();
     await VestingContract.deployed();
+    await VestingContract.initialize(BRTTokenContract.address);
   });
 
   describe("Deployment", function () {
