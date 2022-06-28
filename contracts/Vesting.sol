@@ -37,9 +37,9 @@ contract Vesting is Ownable {
 
         uint claimAmount = getCurrentVestAmountForAddress(msg.sender);
 
-        _token.transfer(msg.sender, claimAmount);
-
         vests[msg.sender].collected = claimAmount;
+
+        _token.transfer(msg.sender, claimAmount);
 
         return claimAmount;
     }
