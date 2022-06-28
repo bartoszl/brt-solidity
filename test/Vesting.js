@@ -43,7 +43,7 @@ describe("Vesting contract", function () {
 
       await VestingContract.vest(addr1.address, amount);
 
-      const vest = await VestingContract.vests(addr1.address);
+      const vest = await VestingContract.vests(addr1.address, 0);
 
       expect(vest.amount).to.equal(amount);
     });
@@ -65,17 +65,21 @@ describe("Vesting contract", function () {
       ).to.be.revertedWith('Not enough allowance');
     });
 
-    it("Should not vest if address already exists", async () => {
+    it("Should add 2 vests for the same contract", async () => {
       const amount = 50;
+      const amount2 = 100;
 
-      await BRTTokenContract.approve(VestingContract.address, 2*amount);
+      await BRTTokenContract.approve(VestingContract.address, amount + amount2);
       await network.provider.send("evm_mine");
 
       await VestingContract.vest(addr1.address, amount);
+      await VestingContract.vest(addr1.address, amount2);
 
-      await expect(
-        VestingContract.vest(addr1.address, amount),
-      ).to.be.revertedWith('Vest for this address already exists');
+      const vest1 = await VestingContract.vests(addr1.address, 0);
+      const vest2 = await VestingContract.vests(addr1.address, 1);
+
+      expect(vest1.amount).to.equal(amount);
+      expect(vest2.amount).to.equal(amount2);
     });
 
     it("Should be able to see full vested amount after 30 days", async function () {
@@ -88,7 +92,7 @@ describe("Vesting contract", function () {
 
       await waitAndMine(60*60*24*30);
 
-      const vestForAddy = await VestingContract.getCurrentVestAmountForAddress(addr1.address);
+      const vestForAddy = await VestingContract.getCurrentVestAmountForAddress(addr1.address, 0);
 
       expect(vestForAddy).to.equal(amount);
     });
@@ -103,7 +107,7 @@ describe("Vesting contract", function () {
 
       await waitAndMine(60*60*24*30*2) // 2 moths
 
-      const vestForAddy = await VestingContract.getCurrentVestAmountForAddress(addr1.address);
+      const vestForAddy = await VestingContract.getCurrentVestAmountForAddress(addr1.address, 0);
 
       expect(vestForAddy).to.equal(100);
     });
@@ -124,7 +128,7 @@ describe("Vesting contract", function () {
 
       await network.provider.send("evm_mine");
 
-      const vest = await VestingContract.vests(addr1.address);
+      const vest = await VestingContract.vests(addr1.address, 0);
 
       expect(vest.collected).to.equal(50);
     });
@@ -143,13 +147,13 @@ describe("Vesting contract", function () {
 
       await network.provider.send("evm_mine");
 
-      const vest = await VestingContract.vests(addr1.address);
+      const vest = await VestingContract.vests(addr1.address, 0);
 
       expect(vest.collected).to.equal(3);
 
       await waitAndMine(60*60*24*8); // 8 days
 
-      const toBeClaimed = await VestingContract.getCurrentVestAmountForAddress(addr1.address);
+      const toBeClaimed = await VestingContract.getCurrentVestAmountForAddress(addr1.address, 0);
 
       expect(toBeClaimed).to.equal(8);
     });
@@ -168,7 +172,7 @@ describe("Vesting contract", function () {
 
       await network.provider.send("evm_mine");
 
-      const vest = await VestingContract.vests(addr1.address);
+      const vest = await VestingContract.vests(addr1.address, 0);
 
       expect(vest.collected).to.equal(amount);
     });
