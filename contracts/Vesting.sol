@@ -19,7 +19,6 @@ contract Vesting is OwnableUpgradeable {
 
     function initialize(IERC20 token) public initializer {
         __Ownable_init();
-        __Ownable_init_unchained();
         _token = token;
     }
 
@@ -28,9 +27,9 @@ contract Vesting is OwnableUpgradeable {
 
         require(allowance >= amount, 'Not enough allowance');
 
-        _token.transferFrom(owner(), address(this), amount);
-
         vests[receiver].push(Vest(amount, block.timestamp, 0));
+
+        _token.transferFrom(owner(), address(this), amount);
     }
 
     function claim() public returns(uint) {
@@ -41,10 +40,10 @@ contract Vesting is OwnableUpgradeable {
 
             vests[msg.sender][i].collected = claimAmount;
 
-            _token.transfer(msg.sender, claimAmount);
-
             sum += claimAmount;
         }
+
+        _token.transfer(msg.sender, sum);
 
         return sum;
     }
