@@ -69,15 +69,15 @@ contract Vesting is OwnableUpgradeable {
     function calculateCurrentVestedAmount(bytes32 currentVestHash) public view returns (uint) {
         Vest memory currentVest = vests[currentVestHash];
 
+        uint availableCoins = currentVest.amount - currentVest.collected;
+
+        if(currentVest.timestamp + _vestingPeriod < block.timestamp) {
+            return availableCoins;
+        }
+
         uint totalToBeCollected = currentVest.amount * (block.timestamp - currentVest.timestamp) / _vestingPeriod;
 
         uint toBeCollected = totalToBeCollected - currentVest.collected;
-
-        uint availableCoins = currentVest.amount - currentVest.collected;
-
-        if (availableCoins < toBeCollected) {
-            return availableCoins;
-        }
 
         return toBeCollected;
     }
